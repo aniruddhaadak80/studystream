@@ -13,8 +13,9 @@ export default function ContentViewer({ topic, onKeywordsChange }: ContentViewer
     const containerRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
-        // Extract keywords from the visible content for suggestions
-        onKeywordsChange(topic.keywords);
+        // Extract keywords from the topic sections for suggestions
+        const allKeyTerms = topic.sections.flatMap(section => section.keyTerms);
+        onKeywordsChange(allKeyTerms);
     }, [topic, onKeywordsChange]);
 
     // Simple syntax highlighting
@@ -51,13 +52,13 @@ export default function ContentViewer({ topic, onKeywordsChange }: ContentViewer
 
                     <h1>{topic.title}</h1>
 
-                    <p className="text-lg text-[#94a3b8]">{topic.content}</p>
+                    <p className="text-lg text-[#94a3b8]">{topic.description}</p>
                 </motion.div>
 
                 {/* Sections */}
                 {topic.sections.map((section, index) => (
                     <motion.section
-                        key={index}
+                        key={section.id}
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: 0.3 + index * 0.1 }}
@@ -66,7 +67,7 @@ export default function ContentViewer({ topic, onKeywordsChange }: ContentViewer
                         <h2>{section.title}</h2>
                         <p>{section.content}</p>
 
-                        {section.code && (
+                        {section.codeExample && (
                             <motion.pre
                                 initial={{ opacity: 0 }}
                                 animate={{ opacity: 1 }}
@@ -75,10 +76,24 @@ export default function ContentViewer({ topic, onKeywordsChange }: ContentViewer
                             >
                                 <code
                                     dangerouslySetInnerHTML={{
-                                        __html: highlightCode(section.code)
+                                        __html: highlightCode(section.codeExample)
                                     }}
                                 />
                             </motion.pre>
+                        )}
+
+                        {/* Key Terms */}
+                        {section.keyTerms.length > 0 && (
+                            <div className="flex flex-wrap gap-2 mt-4">
+                                {section.keyTerms.map((term, i) => (
+                                    <span
+                                        key={i}
+                                        className="px-2 py-1 text-xs bg-[#667eea]/20 text-[#667eea] rounded-md"
+                                    >
+                                        {term}
+                                    </span>
+                                ))}
+                            </div>
                         )}
                     </motion.section>
                 ))}

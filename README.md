@@ -120,13 +120,19 @@ studystream/
 ## 📸 Screenshots
 
 ### Dashboard
-![Study Dashboard](#)
+![Image deription](https://dev-to-uploads.s3.amazonaws.com/uploads/articles/fvlyp5200ym4g9a89d1p.png)
+
+![Imagescription](https://dev-to-uploads.s3.amazonaws.com/uploads/articles/8yhwxkt42ln02z63g8xo.png)
+
 
 ### Topic View
-![Topic Learning](#)
 
+![Image ription](https://dev-to-uploads.s3.amazonaws.com/uploads/articles/b9d3begslvuhzlob6vye.png)
+
+
+![Image deiption](https://dev-to-uploads.s3.amazonaws.com/uploads/articles/nwdglz28o7p54tdlaf5z.png)
 ### Quiz Mode
-![Interactive Quiz](#)
+![Image dription](https://dev-to-uploads.s3.amazonaws.com/uploads/articles/m2f5tkj78lfikn1xqk0c.png)
 
 ## 🤝 Contributing
 

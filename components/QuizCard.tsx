@@ -32,9 +32,9 @@ export default function QuizCard({ question, onClose, onAnswer }: QuizCardProps)
 
     const getDifficultyLabel = (difficulty: string) => {
         const labels: Record<string, string> = {
-            easy: 'Beginner',
-            medium: 'Intermediate',
-            hard: 'Advanced',
+            beginner: 'Beginner',
+            intermediate: 'Intermediate',
+            advanced: 'Advanced',
         };
         return labels[difficulty] || difficulty;
     };
@@ -55,9 +55,9 @@ export default function QuizCard({ question, onClose, onAnswer }: QuizCardProps)
                 {/* Header */}
                 <div className="flex items-center justify-between mb-6">
                     <div className="flex items-center gap-3">
-                        <span className={`px-3 py-1 rounded-full text-xs font-medium ${question.difficulty === 'easy' ? 'bg-green-500/20 text-green-400' :
-                                question.difficulty === 'medium' ? 'bg-yellow-500/20 text-yellow-400' :
-                                    'bg-red-500/20 text-red-400'
+                        <span className={`px-3 py-1 rounded-full text-xs font-medium ${question.difficulty === 'beginner' ? 'bg-green-500/20 text-green-400' :
+                            question.difficulty === 'intermediate' ? 'bg-yellow-500/20 text-yellow-400' :
+                                'bg-red-500/20 text-red-400'
                             }`}>
                             {getDifficultyLabel(question.difficulty)}
                         </span>

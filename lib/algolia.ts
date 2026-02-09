@@ -1,4 +1,4 @@
-import algoliasearch from 'algoliasearch';
+import { algoliasearch } from 'algoliasearch';
 
 // Initialize Algolia client
 const appId = process.env.NEXT_PUBLIC_ALGOLIA_APP_ID || 'HEFWEE9Y3E';
@@ -14,10 +14,6 @@ export const adminClient = adminKey ? algoliasearch(appId, adminKey) : null;
 // Index names
 export const TOPICS_INDEX = 'study_topics';
 export const QUESTIONS_INDEX = 'practice_questions';
-
-// Get search indices
-export const topicsIndex = searchClient.initIndex(TOPICS_INDEX);
-export const questionsIndex = searchClient.initIndex(QUESTIONS_INDEX);
 
 // Types
 export interface StudyTopicRecord {
@@ -70,12 +66,16 @@ export async function searchTopics(query: string, filters?: {
     }
 
     try {
-        const results = await topicsIndex.search<StudyTopicRecord>(query, {
-            filters: filterString,
-            hitsPerPage: 20,
+        const results = await searchClient.searchSingleIndex({
+            indexName: TOPICS_INDEX,
+            searchParams: {
+                query,
+                filters: filterString,
+                hitsPerPage: 20,
+            }
         });
 
-        return results.hits;
+        return results.hits as unknown as StudyTopicRecord[];
     } catch (error) {
         console.error('Algolia search error:', error);
         return [];
@@ -91,12 +91,16 @@ export async function getRelatedQuestions(topicId: string, difficulty?: string) 
     }
 
     try {
-        const results = await questionsIndex.search<QuestionRecord>('', {
-            filters: filterString,
-            hitsPerPage: 10,
+        const results = await searchClient.searchSingleIndex({
+            indexName: QUESTIONS_INDEX,
+            searchParams: {
+                query: '',
+                filters: filterString,
+                hitsPerPage: 10,
+            }
         });
 
-        return results.hits;
+        return results.hits as unknown as QuestionRecord[];
     } catch (error) {
         console.error('Algolia search error:', error);
         return [];
@@ -106,12 +110,16 @@ export async function getRelatedQuestions(topicId: string, difficulty?: string) 
 // Get suggested topics based on current topic
 export async function getSuggestedTopics(currentSubject: string, excludeId: string) {
     try {
-        const results = await topicsIndex.search<StudyTopicRecord>('', {
-            filters: `subject:${currentSubject} AND NOT objectID:${excludeId}`,
-            hitsPerPage: 3,
+        const results = await searchClient.searchSingleIndex({
+            indexName: TOPICS_INDEX,
+            searchParams: {
+                query: '',
+                filters: `subject:${currentSubject} AND NOT objectID:${excludeId}`,
+                hitsPerPage: 3,
+            }
         });
 
-        return results.hits;
+        return results.hits as unknown as StudyTopicRecord[];
     } catch (error) {
         console.error('Algolia search error:', error);
         return [];

@@ -25,6 +25,7 @@ import {
 } from 'lucide-react';
 import { studyTopics, getTopicsBySubject, getAllSubjects, StudyTopic, PracticeQuestion } from '@/lib/study-data';
 import { scoreQuiz } from '@/lib/quiz';
+import { LAST_STUDY_STORAGE_KEY, STREAK_STORAGE_KEY, dayKey, nextStreak } from '@/lib/streak';
 
 // Confetti Effect Component
 function Confetti() {
@@ -473,8 +474,11 @@ export default function StudyStreamPage() {
     const savedCorrect = localStorage.getItem('correctAnswers');
     if (savedCorrect) setCorrectAnswers(parseInt(savedCorrect));
 
-    const savedStreak = localStorage.getItem('studyStreak');
-    if (savedStreak) setStreak(parseInt(savedStreak));
+    const savedStreak = localStorage.getItem(STREAK_STORAGE_KEY);
+    if (savedStreak) {
+      const parsed = parseInt(savedStreak, 10);
+      if (!Number.isNaN(parsed)) setStreak(parsed);
+    }
   }, []);
 
   const subjects = getAllSubjects();
@@ -510,6 +514,17 @@ export default function StudyStreamPage() {
       const newProgress = { ...progress, [selectedTopic!.id]: percentage };
       setProgress(newProgress);
       localStorage.setItem('studyProgress', JSON.stringify(newProgress));
+
+      // Keep the day streak alive. The streak used to be read from storage
+      // but never written, so it stayed at 1 forever.
+      const today = dayKey(new Date());
+      const lastStudyDay = localStorage.getItem(LAST_STUDY_STORAGE_KEY);
+      setStreak(prev => {
+        const updated = nextStreak(prev, lastStudyDay, today);
+        localStorage.setItem(STREAK_STORAGE_KEY, updated.toString());
+        return updated;
+      });
+      localStorage.setItem(LAST_STUDY_STORAGE_KEY, today);
 
       if (percentage >= 70) {
         setShowConfetti(true);

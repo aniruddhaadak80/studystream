@@ -24,6 +24,7 @@ import {
   Award
 } from 'lucide-react';
 import { studyTopics, getTopicsBySubject, getAllSubjects, StudyTopic, PracticeQuestion } from '@/lib/study-data';
+import { scoreQuiz } from '@/lib/quiz';
 import { LAST_STUDY_STORAGE_KEY, STREAK_STORAGE_KEY, dayKey, nextStreak } from '@/lib/streak';
 
 // Confetti Effect Component
@@ -507,9 +508,7 @@ export default function StudyStreamPage() {
       setCurrentQuestionIndex(currentQuestionIndex + 1);
     } else {
       // Quiz completed
-      const correctCount = quizResults.filter(r => r.correct).length +
-        (quizResults[quizResults.length - 1]?.correct ? 0 : -1);
-      const percentage = Math.round(((correctCount + 1) / selectedTopic!.practiceQuestions.length) * 100);
+      const percentage = scoreQuiz(quizResults, selectedTopic!.practiceQuestions.length);
 
       // Update progress
       const newProgress = { ...progress, [selectedTopic!.id]: percentage };
